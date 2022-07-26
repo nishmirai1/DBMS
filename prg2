@@ -1,0 +1,118 @@
+create table student4(usn varchar(10) primary key, 
+name char(20),
+date_of_birth date,
+branch char(30), 
+mark1 float(5,2),
+mark2 float(5,2),
+mark3 float(5,2),
+total float(5,2),
+GPA float(5,2));
+
+mysql> desc student4;
++---------------+-------------+------+-----+---------+-------+
+| Field         | Type        | Null | Key | Default | Extra |
++---------------+-------------+------+-----+---------+-------+
+| usn           | varchar(10) | NO   | PRI | NULL    |       |
+| name          | char(20)    | YES  |     | NULL    |       |
+| date_of_birth | date        | YES  |     | NULL    |       |
+| branch        | char(30)    | YES  |     | NULL    |       |
+| mark1         | float(5,2)  | YES  |     | NULL    |       |
+| mark2         | float(5,2)  | YES  |     | NULL    |       |
+| mark3         | float(5,2)  | YES  |     | NULL    |       |
+| total         | float(5,2)  | YES  |     | NULL    |       |
+| GPA           | float(5,2)  | YES  |     | NULL    |       |
++---------------+-------------+------+-----+---------+-------+
+
+
+insert into student4 (usn,name,date_of_birth,branch,mark1,mark2,mark3) values("4VP21MC027","nishmi","2000-10-28","MCA",70,75,80);
+
+insert into student4 (usn,name,date_of_birth,branch,mark1,mark2,mark3) values("4VP21MC02","sameeksha","2001-02-21","MCA",72,70,77);
+
+insert into student4 (usn,name,date_of_birth,branch,mark1,mark2,mark3) values("4VP21MC017","neha","2000-10-12","MCA",75,82,85);
+
+insert into student4 (usn,name,date_of_birth,branch,mark1,mark2,mark3) values("4VP21MC025","sushmi","2000-04-01","MBA",66,70,70);
+
+insert into student4 (usn,name,date_of_birth,branch,mark1,mark2,mark3) values("4VP21MC035","kavya","2000-11-20","MBA",78,88,73);
+
+mysql> select * from student4;
++------------+-----------+---------------+--------+-------+-------+-------+-------+------+
+| usn        | name      | date_of_birth | branch | mark1 | mark2 | mark3 | total | GPA  |
++------------+-----------+---------------+--------+-------+-------+-------+-------+------+
+| 4VP21MC017 | neha      | 2000-10-12    | MCA    | 75.00 | 82.00 | 85.00 |  NULL | NULL |
+| 4VP21MC02  | sameeksha | 2001-02-21    | MCA    | 72.00 | 70.00 | 77.00 |  NULL | NULL |
+| 4VP21MC025 | sushmi    | 2000-04-01    | MBA    | 66.00 | 70.00 | 70.00 |  NULL | NULL |
+| 4VP21MC027 | nishmi    | 2000-10-28    | MCA    | 70.00 | 75.00 | 80.00 |  NULL | NULL |
+| 4VP21MC035 | kavya     | 2000-11-20    | MBA    | 78.00 | 88.00 | 73.00 |  NULL | NULL |
++------------+-----------+---------------+--------+-------+-------+-------+-------+------+
+5 rows in set (0.00 sec)
+
+
+1 update student4
+set total=mark1+mark2+mark3;
+
+
+2 update student4
+set GPA=total/3;
+
+Rows matched: 5  Changed: 0  Warnings: 0
+
+
+3 select name from student4 where name like "%sh";
+
+
+4 select usn,name from student4
+ where date_of_birth between "2000-01-01" and "2010-12-30";
+
++------------+-----------+
+| usn        | name      |
++------------+-----------+
+| 4VP21MC017 | neha      |
+| 4VP21MC02  | sameeksha |
+| 4VP21MC025 | sushmi    |
+| 4VP21MC027 | nishmi    |
+| 4VP21MC035 | kavya     |
++------------+-----------+
+
+5 select max(GPA),branch
+from student4
+group by branch;
+
++----------+--------+
+| max(GPA) | branch |
++----------+--------+
+|    80.67 | MCA    |
+|    79.67 | MBA    |
++----------+--------+
+
+6 select * from student4 
+where name like 's%';
+
++------------+-----------+---------------+--------+-------+-------+-------+--------+-------+
+| usn        | name      | date_of_birth | branch | mark1 | mark2 | mark3 | total  | GPA   |
++------------+-----------+---------------+--------+-------+-------+-------+--------+-------+
+| 4VP21MC02  | sameeksha | 2001-02-21    | MCA    | 72.00 | 70.00 | 77.00 | 219.00 | 73.00 |
+| 4VP21MC025 | sushmi    | 2000-04-01    | MBA    | 66.00 | 70.00 | 70.00 | 206.00 | 68.67 |
++------------+-----------+---------------+--------+-------+-------+-------+--------+-------+
+
+
+
+select * from student where
+exists
+(select br.usn
+from borrow br,book bk
+where br.bookid=bk.bookid and br.usn=s.usn
+group by usn
+having count(distinct authorid)>1);
+
+
+select * from student s where
+exists
+(select usn,publisher from borrow,book
+where borrow.bookid=book.bookid
+and s.usn=borrow.usn
+group by usn
+having count(distinct publisher)=1);
+
+
+
+
