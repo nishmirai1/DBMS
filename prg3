@@ -1,0 +1,309 @@
+Create table team(team_id varchar(10) primary key, 
+name varchar(20) not null,
+city varchar(30) not null,
+coach varchar(10) not null,
+captain_id varchar(10));
+
+mysql> desc team;
++------------+-------------+------+-----+---------+-------+
+| Field      | Type        | Null | Key | Default | Extra |
++------------+-------------+------+-----+---------+-------+
+| team_id    | varchar(10) | NO   | PRI | NULL    |       |
+| name       | varchar(20) | NO   |     | NULL    |       |
+| city       | varchar(30) | NO   |     | NULL    |       |
+| coach      | varchar(10) | NO   |     | NULL    |       |
+| captain_id | varchar(10) | YES  |     | NULL    |       |
++------------+-------------+------+-----+---------+-------+
+5 rows in set (0.01 sec)
+
+alter table team add foreign key(captain_id) references player(player_id);
+
+Create table player(player_id varchar(10) primary key,
+name varchar(10) not null,
+phone int(10) not null,
+age int(3) not null,
+team_id varchar(10),
+foreign key (team_id) references team(team_id));
+
+mysql> desc player;
++-----------+-------------+------+-----+---------+-------+
+| Field     | Type        | Null | Key | Default | Extra |
++-----------+-------------+------+-----+---------+-------+
+| player_id | varchar(10) | NO   | PRI | NULL    |       |
+| name      | varchar(10) | NO   |     | NULL    |       |
+| phone     | int         | NO   |     | NULL    |       |
+| age       | int         | NO   |     | NULL    |       |
+| team_id   | varchar(10) | YES  | MUL | NULL    |       |
++-----------+-------------+------+-----+---------+-------+
+
+
+create table stadium(stadium_id varchar(10) primary key,
+name varchar(20) not null,
+city varchar(20) not null,
+area varchar(20) not null,
+pincode int(6) not null);
+
+mysql> desc stadium;
++------------+-------------+------+-----+---------+-------+
+| Field      | Type        | Null | Key | Default | Extra |
++------------+-------------+------+-----+---------+-------+
+| stadium_id | varchar(10) | NO   | PRI | NULL    |       |
+| name       | varchar(20) | NO   |     | NULL    |       |
+| city       | varchar(20) | NO   |     | NULL    |       |
+| area       | varchar(20) | NO   |     | NULL    |       |
+| pincode    | int         | NO   |     | NULL    |       |
++------------+-------------+------+-----+---------+-------+
+
+
+create table playing2(match_id varchar(10) primary key,
+mdate date not null, mtime time not null,
+team_id1 varchar(10),
+team_id2 varchar(10),
+stadium_id varchar(10),
+winner_id varchar(10),
+foreign key(team_id1)references team(team_id),
+foreign key(team_id2)references team(team_id),
+foreign key(stadium_id)references stadium(stadium_id));
+
+mysql> desc playing;
++------------+-------------+------+-----+---------+-------+
+| Field      | Type        | Null | Key | Default | Extra |
++------------+-------------+------+-----+---------+-------+
+| match_id   | varchar(10) | NO   | PRI | NULL    |       |
+| mdate      | date        | NO   |     | NULL    |       |
+| mtime      | time        | NO   |     | NULL    |       |
+| team_id1   | varchar(10) | YES  | MUL | NULL    |       |
+| team_id2   | varchar(10) | YES  | MUL | NULL    |       |
+| stadium_id | varchar(10) | YES  | MUL | NULL    |       |
+| winner_id  | varchar(10) | YES  |     | NULL    |       |
++------------+-------------+------+-----+---------+-------+
+
+
+create table winner(match_id varchar(10) not null,
+player_id varchar(10) not null,
+primary key(match_id,player_id),
+foreign key(match_id) references playing(match_id),
+foreign key(player_id) references player(player_id));
+
+mysql> desc winner;
++-----------+-------------+------+-----+---------+-------+
+| Field     | Type        | Null | Key | Default | Extra |
++-----------+-------------+------+-----+---------+-------+
+| match_id  | varchar(10) | NO   | PRI | NULL    |       |
+| player_id | varchar(10) | NO   | PRI | NULL    |       |
++-----------+-------------+------+-----+---------+-------+
+
+alter table winner add foreign key(match_id) references playing(match_id);
+
+alter table winner add foreign key(player_id) references player(player_id);
+
+
+
+insert into team(team_id,name,city,coach)values("T1","Hariyana","bangalore","Pawan");
+insert into team(team_id,name,city,coach)values("T2","Pattna pirate","pattna","singh");
+insert into team(team_id,name,city,coach)values("T3","Bangalore bulls","bangalore","sheravath");
+insert into team(team_id,name,city,coach)values("T4","Tamil talaiva","tamil nadu","sukesh");
+insert into team(team_id,name,city,coach)values("T5","jaipur","jaipura","prashanth");
+
+mysql> select * from team;
++---------+-----------------+------------+-----------+------------+
+| team_id | name            | city       | coach     | captain_id |
++---------+-----------------+------------+-----------+------------+
+| T1      | Hariyana        | bangalore  | Pawan     | NULL       |
+| T2      | Pattna pirate   | pattna     | singh     | NULL       |
+| T3      | Bangalore bulls | bangalore  | sheravath | NULL       |
+| T4      | Tamil talaiva   | tamil nadu | sukesh    | NULL       |
+| T5      | jaipur          | jaipura    | prashanth | NULL       |
++---------+-----------------+------------+-----------+------------+
+
+
+insert into player values("p6","kavaya", 447649,22,"T2");
+insert into player values("p7","sameeksha", 558341,24,"T1");
+insert into player values("p8","nishh", 887419,22,"T4");
+insert into player values("p9","dhanajay", 887402,25,"T1");
+insert into player values("p10","karthik", 773910,23,"T5");
+
+mysql> select * from player;
++-----------+-----------+--------+-----+---------+
+| player_id | name      | phone  | age | team_id |
++-----------+-----------+--------+-----+---------+
+| p10       | karthik   | 773910 |  23 | T5      |
+| p6        | kavaya    | 447649 |  22 | T2      |
+| p7        | sameeksha | 558341 |  24 | T1      |
+| p8        | nishh     | 887419 |  22 | T4      |
+| p9        | dhanajay  | 887402 |  25 | T1      |
++-----------+-----------+--------+-----+---------+
+
+
+insert into stadium values("s1", "aa acadamy","puttur","mangalore",556739);
+insert into stadium values("s2", "channa swamy","belthangadi","mangalore",556779);
+insert into stadium values("s3", "wankade","ujjre","mangalore",556639);
+insert into stadium values("s4", "mdh school","RM nagara","bangalore",556549);
+insert into stadium values("s5", "AB stadium","bantwala","mangalore",556710);
+
+mysql> select * from stadium;
++------------+--------------+-------------+-----------+---------+
+| stadium_id | name         | city        | area      | pincode |
++------------+--------------+-------------+-----------+---------+
+| s1         | aa acadamy   | puttur      | mangalore |  556739 |
+| s2         | channa swamy | belthangadi | mangalore |  556779 |
+| s3         | wankade      | ujjre       | mangalore |  556639 |
+| s4         | mdh school   | RM nagara   | bangalore |  556549 |
+| s5         | AB stadium   | bantwala    | mangalore |  556710 |
++------------+--------------+-------------+-----------+---------+
+
+
+insert into playing2 values("m1","2021-03-21","10:30","T1","T2","s2","w1");
+insert into playing2 values("m2","2021-04-10","11:00","T3","T2","s1","w2");
+insert into playing2 values("m3","2020-06-12","12:15","T4","T3","s4","w3");
+insert into playing2 values("m4","2020-10-15","2:00","T2","T4","s3","w4");
+insert into playing2 values("m5","1999-03-20","3:30","T1","T2","s5","w5");
+
+mysql> select * from playing;
++----------+------------+----------+----------+----------+------------+-----------+
+| match_id | mdate      | mtime    | team_id1 | team_id2 | stadium_id | winner_id |
++----------+------------+----------+----------+----------+------------+-----------+
+| m1       | 2021-03-21 | 10:30:00 | T1       | T2       | s2         | w1        |
+| m2       | 2021-04-10 | 11:00:00 | T3       | T2       | s1         | w2        |
+| m3       | 2020-06-12 | 12:15:00 | T4       | T3       | s4         | w3        |
+| m4       | 2020-10-15 | 02:00:00 | T2       | T4       | s3         | w4        |
+| m5       | 1999-03-20 | 03:30:00 | T1       | T2       | s5         | w5        |
++----------+------------+----------+----------+----------+------------+-----------+
+5 rows in set (0.00 sec)
+
+
+insert into winner values("m1","p6");
+insert into winner values("m2","p7");
+insert into winner values("m3","p8");
+insert into winner values("m4","p9");
+insert into winner values("m5","p10");
+
+mysql> select * from winner;
++----------+-----------+
+| match_id | player_id |
++----------+-----------+
+| m5       | p10       |
+| m1       | p6        |
+| m2       | p7        |
+| m3       | p8        |
+| m4       | p9        |
++----------+-----------+
+
+
+QUERY 1:
+select p.name,t.name, age from player p, team t 
+where p.team_id=t.team_id and age =(select min(age) from player);
+
++--------+---------------+-----+
+| name   | name          | age |
++--------+---------------+-----+
+| kavaya | Pattna pirate |  22 |
+| nishh  | Tamil talaiva |  22 |
++--------+---------------+-----+
+
+QUERY 
+select count(p.stadium_id)from stadium s, playing p;
++---------------------+
+| count(p.stadium_id) |
++---------------------+
+|                  25 |
++---------------------+
+
+
+QUERY 
+select stadium_id,count(match_id)from playing group by stadium_id;
++------------+-----------------+
+| stadium_id | count(match_id) |
++------------+-----------------+
+| s1         |               1 |
+| s2         |               1 |
+| s3         |               1 |
+| s4         |               1 |
+| s5         |               1 |
++------------+-----------------+
+
+select stadium_id,count(match_id)from playing group by stadium_id order by count(stadium_id)desc limit 1;
+
++------------+-----------------+
+| stadium_id | count(match_id) |
++------------+-----------------+
+| s1         |               1 |
++------------+-----------------+
+
+
+QUERY 2:
+
+select * from stadium where stadium_id=(select stadium_id from playing group by stadium_id
+order by count(stadium_id)desc limit 1);
+
++------------+------------+--------+-----------+---------+
+| stadium_id | name       | city   | area      | pincode |
++------------+------------+--------+-----------+---------+
+| s1         | aa acadamy | puttur | mangalore |  556739 |
++------------+------------+--------+-----------+---------+
+
+QUERY 3:
+select * from player where player_id in(
+select player_id from winner where player_id not in(select captain_id from team));
+
+Empty set (0.00 sec)
+
+QUERY
+
+select * from player where player_id in(
+select player_id from winner where player_id not in(select captain_id from team)
+group by player_id having count(player_id)>=2);
+
+Empty set (0.00 sec)
+
+QUERY 4:
+select * from team where team_id=(select winner_id from playing2
+group by winner_id order by count(winner_id)desc limit 1);
+
+Empty set (0.00 sec)
+
+
+QUERY:5
+
+select * from team where team_id=(select winner_id from
+playing2 group by winner_id
+having count(stadium_id)>=2);
+
+Empty set (0.00 sec)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
