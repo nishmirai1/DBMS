@@ -1,0 +1,173 @@
+create table Place(place_id varchar(10) primary key,
+name varchar(10) not null,state varchar(20) not null,
+km int(4) not null, history varchar(20) not null);
+
+mysql> desc Place;
++----------+-------------+------+-----+---------+-------+
+| Field    | Type        | Null | Key | Default | Extra |
++----------+-------------+------+-----+---------+-------+
+| place_id | varchar(10) | NO   | PRI | NULL    |       |
+| name     | varchar(10) | NO   |     | NULL    |       |
+| state    | varchar(20) | NO   |     | NULL    |       |
+| km       | int         | NO   |     | NULL    |       |
+| history  | varchar(20) | NO   |     | NULL    |       |
++----------+-------------+------+-----+---------+-------+
+5 rows in set (0.00 sec)
+
+
+create table tourist(tourist_id varchar(10) primary key,
+name varchar(10) not null, age int(3) not null,country varchar(20) not null);
+
+mysql> desc tourist;
+
+
+------+------+-----+---------+-------+
+| Field      | Type        | Null | Key | Default | Extra |
++------------+-------------+------+-----+---------+-------+
+| tourist_id | varchar(10) | NO   | PRI | NULL    |       |
+| name       | varchar(10) | NO   |     | NULL    |       |
+| age        | int         | NO   |     | NULL    |       |
+| country    | varchar(20) | NO   |     | NULL    |       |
++------------+-------------+------+-----+---------+-------+
+4 rows in set (0.01 sec)
+
+
+
+create table visit(tourist_id varchar(10) not null, place_id varchar(10) not null,
+date date not null,
+foreign key(tourist_id) references tourist(tourist_id),
+foreign key(place_id) references Place(place_id));
+
+mysql> desc visit;
++------------+-------------+------+-----+---------+-------+
+| Field      | Type        | Null | Key | Default | Extra |
++------------+-------------+------+-----+---------+-------+
+| tourist_id | varchar(10) | NO   | MUL | NULL    |       |
+| place_id   | varchar(10) | NO   | MUL | NULL    |       |
+| date       | date        | NO   |     | NULL    |       |
++------------+-------------+------+-----+---------+-------+
+3 rows in set (0.01 sec)
+
+
+create table email(tourist_id varchar(10) not null,email varchar(25),
+foreign key(tourist_id)references tourist(tourist_id),
+primary key(tourist_id,email));
+
+mysql> desc email;
++------------+-------------+------+-----+---------+-------+
+| Field      | Type        | Null | Key | Default | Extra |
++------------+-------------+------+-----+---------+-------+
+| tourist_id | varchar(10) | NO   | PRI | NULL    |       |
+| email      | varchar(25) | NO   | PRI | NULL    |       |
++------------+-------------+------+-----+---------+-------+
+2 rows in set (0.01 sec)
+
+insert into Place values("p01","wonderlaw","karnataka","50","water");
+insert into Place values("p02","hampi","karnataka","30","historical place");
+insert into Place values("p03","krs dam","karnataka","60","dam");
+insert into Place values("p04","palace","karnataka","40","nice place");
+insert into Place values("p05","coorg","karnataka","50","nice view");
+
+mysql> select * from Place;
++----------+-----------+-----------+----+------------------+
+| place_id | name      | state     | km | history          |
++----------+-----------+-----------+----+------------------+
+| p01      | wonderlaw | karnataka | 50 | water            |
+| p02      | hampi     | karnataka | 30 | historical place |
+| p03      | krs dam   | karnataka | 60 | dam              |
+| p04      | palace    | karnataka | 40 | nice place       |
+| p05      | coorg     | karnataka | 50 | nice view        |
++----------+-----------+-----------+----+------------------+
+5 rows in set (0.00 sec)
+
+
+insert into tourist values("t01","nishmi","21","india");
+insert into tourist values("t02","neha","22","india");
+insert into tourist values("t03","chami","22","india");
+insert into tourist values("t04","preethin","25","USA");
+
+mysql> select * from tourist;
++------------+----------+-----+---------+
+| tourist_id | name     | age | country |
++------------+----------+-----+---------+
+| t01        | nishmi   |  21 | india   |
+| t02        | neha     |  22 | india   |
+| t03        | chami    |  22 | india   |
+| t04        | preethin |  25 | USA     |
++------------+----------+-----+---------+
+4 rows in set (0.00 sec)
+
+insert into visit values("t01","p01","2020-10-01");
+insert into visit values("t02","p02","1999-11-06");
+insert into visit values("t03","p03","2021-12-10");
+insert into visit values("t04","p04","2020-10-05");
+
+mysql> select * from visit;
++------------+----------+------------+
+| tourist_id | place_id | date       |
++------------+----------+------------+
+| t01        | p01      | 2020-10-01 |
+| t02        | p02      | 1999-11-06 |
+| t03        | p03      | 2021-12-10 |
+| t04        | p04      | 2020-10-05 |
++------------+----------+------------+
+4 rows in set (0.00 sec)
+
+
+insert into email values("t01","nishh@gmail.com");
+insert into email values("t02","neha@gmail.com");
+insert into email values("t03","chami@gmail.com");
+insert into email values("t04","preeth@gmail.com");
+
+mysql> select * from email;
++------------+------------------+
+| tourist_id | email            |
++------------+------------------+
+| t01        | nishh@gmail.com  |
+| t02        | neha@gmail.com   |
+| t03        | chami@gmail.com  |
+| t04        | preeth@gmail.com |
++------------+------------------+
+4 rows in set (0.00 sec)
+
+QUERY1:
+
+select state,count(place_id)from Place 
+group by state order by count(place_id)desc limit 1;
+
++-----------+-----------------+
+| state     | count(place_id) |
++-----------+-----------------+
+| karnataka |               5 |
++-----------+-----------------+
+
+QUERY2:
+
+select p.*,count(v.place_id)as visits from Place p,visit v where p.place_id=v.place_id
+group by v.place_id order by count(v.place_id)desc limit 1;
++----------+-----------+-----------+----+---------+--------+
+| place_id | name      | state     | km | history | visits |
++----------+-----------+-----------+----+---------+--------+
+| p01      | wonderlaw | karnataka | 50 | water   |      1 |
++----------+-----------+-----------+----+---------+--------+
+
+QUERY3:
+
+ select * from tourist where tourist_id in
+ (select tourist_id from visit v,Place p where
+ v.place_id=p.place_id and state="karnataka");
++------------+----------+-----+---------+
+| tourist_id | name     | age | country |
++------------+----------+-----+---------+
+| t01        | nishmi   |  21 | india   |
+| t02        | neha     |  22 | india   |
+| t03        | chami    |  22 | india   |
+| t04        | preethin |  25 | USA     |
++------------+----------+-----+---------+
+
+
+
+
+
+
+
