@@ -1,0 +1,252 @@
+create table candidate(cid char(10) primary key,
+name varchar(20),
+pno char(10),
+age int(10),
+state varchar(20),
+pid char(10),
+foreign key(pid)references party(pid));
+
++-------+-------------+------+-----+---------+-------+
+| Field | Type        | Null | Key | Default | Extra |
++-------+-------------+------+-----+---------+-------+
+| cid   | char(10)    | NO   | PRI | NULL    |       |
+| name  | varchar(20) | YES  |     | NULL    |       |
+| pno   | char(10)    | YES  |     | NULL    |       |
+| age   | int         | YES  |     | NULL    |       |
+| state | varchar(20) | YES  |     | NULL    |       |
+| pid   | char(10)    | YES  | MUL | NULL    |       |
++-------+-------------+------+-----+---------+-------+
+
+insert into candidate values('c01','deepu','8296289864',22,'karnataka','p01');
+insert into candidate values('c02','darshu','9008284434',30,'karnataka','p03');
+insert into candidate values('c03','prasanna','9663782026',45,'mumbai','p04');
+insert into candidate values('c04','nethra','6364651270',35,'andra','p02');
+
+
++-----+----------+------------+------+-----------+------+
+| cid | name     | pno        | age  | state     | pid  |
++-----+----------+------------+------+-----------+------+
+| c01 | deepu    | 8296289864 |   22 | karnataka | p01  |
+| c02 | darshu   | 9008284434 |   30 | karnataka | p03  |
+| c03 | prasanna | 9663782026 |   45 | mumbai    | p04  |
+| c04 | nethra   | 6364651270 |   35 | andra     | p02  |
++-----+----------+------------+------+-----------+------+
+
+
+create table const(coid char(10) primary key,
+cname varchar(20),
+cstate varchar(20),
+votes char(10));
+
++--------+-------------+------+-----+---------+-------+
+| Field  | Type        | Null | Key | Default | Extra |
++--------+-------------+------+-----+---------+-------+
+| coid   | char(10)    | NO   | PRI | NULL    |       |
+| cname  | varchar(20) | YES  |     | NULL    |       |
+| cstate | varchar(20) | YES  |     | NULL    |       |
+| votes  | char(10)    | YES  |     | NULL    |       |
++--------+-------------+------+-----+---------+-------+
+
+insert into const values('co01','hassan','karnataka','100');
+insert into const values('co02','mysore','karnataka','1000');
+insert into const values('co03','telangana','hyderbad','2000');
+insert into const values('co04','maharastra','mumbai','3000');
+
+
++------+------------+-----------+-------+
+| coid | cname      | cstate    | votes |
++------+------------+-----------+-------+
+| co01 | hassan     | karnataka | 100   |
+| co02 | mysore     | karnataka | 1000  |
+| co03 | telangana  | hyderbad  | 3000  |
+| co04 | maharastra | mumbai    | 2000  |
++------+------------+-----------+-------+
+
+
+
+create table voter(vid char(10) primary key,
+vname varchar(20),
+age int(10),
+addr varchar(20),
+coid char(10),
+cid char(10),
+foreign key(cid)references candidate(cid),
+foreign key(coid)references const(coid));
+
++-------+-------------+------+-----+---------+-------+
+| Field | Type        | Null | Key | Default | Extra |
++-------+-------------+------+-----+---------+-------+
+| vid   | char(10)    | NO   | PRI | NULL    |       |
+| vname | varchar(20) | YES  |     | NULL    |       |
+| age   | int         | YES  |     | NULL    |       |
+| addr  | varchar(20) | YES  |     | NULL    |       |
+| coid  | char(10)    | YES  | MUL | NULL    |       |
+| cid   | char(10)    | YES  | MUL | NULL    |       |
++-------+-------------+------+-----+---------+-------+
+
+insert into voter values('v01','dhanya',22,'kavu','co01','c01');
+insert into voter values('v02','shrunga',35,'vitla','co04','c04');
+insert into voter values('v03','geetha',55,'patte','co03','c03');
+insert into voter values('v04','jhanu',41,'puttur','co02','c02');
+
+
++-----+---------+------+--------+------+------+
+| vid | vname   | age  | addr   | coid | cid  |
++-----+---------+------+--------+------+------+
+| v01 | dhanya  |   22 | kavu   | co01 | c01  |
+| v02 | shrunga |   35 | vitla  | co04 | c04  |
+| v03 | geetha  |   55 | patte  | co03 | c03  |
+| v04 | jhanu   |   41 | puttur | co02 | c02  |
++-----+---------+------+--------+------+------+
+
+
+create table party(pid char(10) primary key,
+pname varchar(20),
+symbol varchar(20));
+
++--------+-------------+------+-----+---------+-------+
+| Field  | Type        | Null | Key | Default | Extra |
++--------+-------------+------+-----+---------+-------+
+| pid    | char(10)    | NO   | PRI | NULL    |       |
+| pname  | varchar(20) | YES  |     | NULL    |       |
+| symbol | varchar(20) | YES  |     | NULL    |       |
++--------+-------------+------+-----+---------+-------+
+
+insert into party values('p01','bjp','lotus');
+insert into party values('p02','jds','janatha dal');
+insert into party values('p03','congress','hand');
+insert into party values('p04','others','clock');
+
++-----+----------+-------------+
+| pid | pname    | symbol      |
++-----+----------+-------------+
+| p01 | bjp      | lotus       |
+| p02 | jds      | janatha dal |
+| p03 | congress | hand        |
+| p04 | others   | clock       |
++-----+----------+-------------+
+
+create table contest(cid char(10),
+coid char(10),
+primary key(cid,coid),
+foreign key(cid)references candidate(cid),
+foreign key(coid)references const(coid));
+
++-------+----------+------+-----+---------+-------+
+| Field | Type     | Null | Key | Default | Extra |
++-------+----------+------+-----+---------+-------+
+| cid   | char(10) | NO   | PRI | NULL    |       |
+| coid  | char(10) | NO   | PRI | NULL    |       |
++-------+----------+------+-----+---------+-------+
+
+
+insert into contest values('c01','co01');
+insert into contest values('c02','co02');
+insert into contest values('c03','co03');
+insert into contest values('c04','co04');
+insert into contest values('c02','co04');
+insert into contest values('c04','co03');
+
+
++-----+------+
+| cid | coid |
++-----+------+
+| c01 | co01 |
+| c02 | co02 |
+| c03 | co03 |
+| c04 | co03 |
+| c02 | co04 |
+| c04 | co04 |
++-----+------+
+
+
+
+1. select * from candidate
+where cid in(select cid from contest
+join const on contest.coid=const.coid
+group by cid having count(distinct(cstate))>1);
+
++-----+--------+------------+------+-----------+------+
+| cid | name   | pno        | age  | state     | pid  |
++-----+--------+------------+------+-----------+------+
+| c02 | darshu | 9008284434 |   30 | karnataka | p03  |
+| c04 | nethra | 6364651270 |   35 | andra     | p02  |
++-----+--------+------------+------+-----------+------+
+
+2  select const.cstate,count(coid) 
+  from const
+  group by const.cstate  
+  order by count(coid) desc limit 1;
+  
++-----------+-------------+
+| cstate    | count(coid) |
++-----------+-------------+
+| karnataka |           2 |
++-----------+-------------+
+
+
+3.
+DELIMITER $$
+create procedure abc(IN vid int(10),IN vname varchar(20),IN age int(10),IN city varchar(20),IN state varchar(20))
+begin
+declare msg varchar(40);
+if age>=18 then
+insert into voter (vid,vname,age,addr)
+values(vid,vname,age,city);
+set msg="row inserted";
+else
+set msg="voter not eligible";
+end if;
+select msg; 
+end$$
+
+call abc(07,'abc',26,'patla','xyz');
+    -> $$
++--------------+
+| msg          |
++--------------+
+| row inserted |
++--------------+
+
+
+4.DELIMITER $$
+create procedure new1(csname varchar(20))
+begin
+select votes from const
+where csname=cname;
+end$$
+
+mysql> call new1('hassan');
+    -> $$
++-------+
+| votes |
++-------+
+| 103   |
++-------+
+
+
+
+5.DELIMITER $$
+create trigger number1 
+after insert
+on voter for each row
+begin update const 
+set votes=votes+3
+where coid=new.coid;
+end$$
+
+
+insert into voter values('v08','dhanya',22,'kav','co01','c01');
+    -> $$
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from const;
+    -> $$
++------+------------+-----------+-------+
+| coid | cname      | cstate    | votes |
++------+------------+-----------+-------+
+| co01 | hassan     | karnataka | 103   |
+| co02 | mysore     | karnataka | 1000  |
+| co03 | telangana  | hyderbad  | 2000  |
+| co04 | maharastra | mumbai    | 3000  |
++------+------------+-----------+-------+

@@ -1,0 +1,65 @@
+
+QUERY5:
+
+DELIMITER $$
+create trigger new1 
+after insert on voter for each row 
+begin
+update const set const.votes=const.votes +3
+where coid=new.coid;
+end $$
+
+
+mysql> drop trigger new1;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> DELIMITER $$
+mysql> create trigger new1 
+    -> after insert on voter for each row 
+    -> begin
+    -> update const set const.votes=const.votes +3
+    -> where coid=new.coid;
+    -> end $$
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> select * from const;
+    -> $$
++------+------------+-----------+-------+
+| coid | cname      | cstate    | votes |
++------+------------+-----------+-------+
+| co01 | hassan     | karnataka | 100   |
+| co02 | mysore     | karnataka | 1000  |
+| co03 | telangana  | hyderbad  | 2000  |
+| co04 | maharastra | mumbai    | 3000  |
+| co05 | hassan     | karnataka | 100   |
++------+------------+-----------+-------+
+5 rows in set (0.00 sec)
+
+mysql> select * from voter;
+    -> $$
++-----+---------+------+--------+------+------+
+| vid | vname   | age  | addr   | coid | cid  |
++-----+---------+------+--------+------+------+
+| v01 | dhanya  |   22 | kavu   | co01 | c01  |
+| v02 | shrunga |   35 | vitla  | co04 | c04  |
+| v03 | geetha  |   55 | patte  | co03 | c03  |
+| v04 | jhanu   |   41 | puttur | co02 | c02  |
++-----+---------+------+--------+------+------+
+4 rows in set (0.00 sec)
+
+mysql> insert into voter values('v5','nishmi',24,'puttur','co01','c01');
+    -> $$
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select * from const;
+    -> $$
++------+------------+-----------+-------+
+| coid | cname      | cstate    | votes |
++------+------------+-----------+-------+
+| co01 | hassan     | karnataka | 103   |
+| co02 | mysore     | karnataka | 1000  |
+| co03 | telangana  | hyderbad  | 2000  |
+| co04 | maharastra | mumbai    | 3000  |
+| co05 | hassan     | karnataka | 100   |
++------+------------+-----------+-------+
+
